@@ -1,10 +1,8 @@
-import java.util.Arrays;
 class Solution {
     public int solution(int[] numbers) {
         int answer = 45;
-        Arrays.sort(numbers);
         for(int i = 0 ; i<numbers.length; i++){
-            answer = answer - numbers[i];
+            answer -= numbers[i];
         }       
         return answer;
     }
