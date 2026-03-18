@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class Main{
+public class Main {
 	static int N, M;
 	static int[] parents;
 	public static void main(String[] args) throws IOException {
@@ -25,7 +25,6 @@ public class Main{
 		for(int i = 1; i < N+1; i++) {
 			componets.add(find(i));
 		}
-//		System.out.println(Arrays.toString(parents));
 		System.out.println(componets.size());
 	}
 	static void make() {
@@ -36,7 +35,7 @@ public class Main{
 	}
 	static int find(int a) {
 		if(parents[a] == a) return a;
-		return parents[a] = find(parents[a]);
+		return find(parents[a]);
 	}
 	
 	static boolean union(int a, int b) {
