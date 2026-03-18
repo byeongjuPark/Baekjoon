@@ -44,7 +44,6 @@ public class Main{
 					tempMinDistance = Math.min(tempMinDistance, getDistance(home, ch.get(a)));
 				}
 				tempMin += tempMinDistance;
-				if(tempMin > min) return;
 			}
 			min = Math.min(tempMin, min);
 			return;
@@ -60,4 +59,3 @@ public class Main{
 	}
 
 }
-
