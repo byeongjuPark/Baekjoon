@@ -1,9 +1,5 @@
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,76 +7,85 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int V, E, startV;
-	static int[] dist;
-	static boolean[] visited;
-	static List<List<Edge>> graph;
-	
+	static int V, E, SV;
+	static int[] d;
+	static boolean[] v;
+	static List<Edge> list[];
 	static class Edge implements Comparable<Edge>{
-		int to, cost;
-		public Edge(int to, int cost) {
-			this.to = to;
-			this.cost = cost;
+		int next;
+		int w;
+		public Edge(int next, int w) {
+			super();
+			this.next = next;
+			this.w = w;
 		}
 		@Override
 		public int compareTo(Edge o) {
-			return this.cost - o.cost;
+			// TODO Auto-generated method stub
+			return Integer.compare(this.w, o.w);
 		}
-		
 	}
-	public static void main(String[] args) throws IOException{	
+	
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = null;
-		StringBuilder sb = new StringBuilder();
-		
-		st = new StringTokenizer(br.readLine());
-		V = Integer.parseInt(st.nextToken()) + 1;
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		V = Integer.parseInt(st.nextToken());
 		E = Integer.parseInt(st.nextToken());
-		startV = Integer.parseInt(br.readLine());
-		dist = new int[V];
-		Arrays.fill(dist, Integer.MAX_VALUE);
-		
-		graph = new ArrayList<>();
+		SV = Integer.parseInt(br.readLine())-1; // 시작 노드
+		list = new ArrayList[V];
 		for(int i = 0; i < V; i++) {
-			graph.add(new ArrayList<>());
+			list[i] = new ArrayList<>();
 		}
+		d = new int[V];
+		Arrays.fill(d, Integer.MAX_VALUE);
+		v = new boolean[V];
 		
 		for(int i = 0; i < E; i++) {
 			st = new StringTokenizer(br.readLine());
-			int from = Integer.parseInt(st.nextToken());
-			int to = Integer.parseInt(st.nextToken());
-			int cost = Integer.parseInt(st.nextToken());
 			
-			graph.get(from).add(new Edge(to, cost));
+			int u = Integer.parseInt(st.nextToken()) - 1;
+			int v = Integer.parseInt(st.nextToken()) - 1;
+			int w = Integer.parseInt(st.nextToken());
+			list[u].add(new Edge(v, w));
 		}
 		
-		setDistance(startV);
-		for(int i = 1; i < V; i++) {
-			System.out.println(dist[i] == Integer.MAX_VALUE ? "INF" : dist[i]);
+		dijkstra(SV);
+		
+//		System.out.println(Arrays.toString(d));
+		for(int i = 0; i < d.length; i++) {
+			System.out.println(d[i] == Integer.MAX_VALUE ? "INF" : d[i]);
 		}
+
 	}
 	
-	
-	static void setDistance(int start) {
+	static void dijkstra(int start) {
+		d[start] = 0;
 		PriorityQueue<Edge> pq = new PriorityQueue<>();
-		dist[start] = 0;
-		visited = new boolean[V];
 		pq.offer(new Edge(start, 0));
 		
+		
 		while(!pq.isEmpty()) {
-			Edge cur = pq.poll();
-			int curV = cur.to;
-			int curCost = cur.cost;
+			int current = pq.peek().next;
+			int distance = pq.peek().w;
+			pq.poll();
 			
-			if(visited[curV]) continue;
-			visited[curV] = true;
-			if(dist[curV] < curCost) continue;
-			dist[curV] = curCost;
-			
-			for(Edge nextV : graph.get(curV)) {
-				pq.add(new Edge(nextV.to, curCost + nextV.cost));
+			if (v[current]) continue;  // 이미 방문한 노드라면 스킵
+			v[current] = true;  // 현재 노드를 방문 체크
+
+			if(d[current] < distance) continue;
+			for(int i = 0; i < list[current].size(); i++) {
+				int next = list[current].get(i).next;
+				int nextDistance = distance + list[current].get(i).w;
+				
+				if(nextDistance < d[next]) {
+					d[next] = nextDistance;
+					pq.add(new Edge(next, nextDistance));
+				}
 			}
-			
 		}
+	
 	}
+	
 }
+
+  
