@@ -1,98 +1,79 @@
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-	static int optionA;
-	static int optionC;
-	static int optionG;
-	static int optionT;
-
+	private static int S, P;
+	private static String s;
+	private static int A, C, G, T;
+	private static int A_, C_, G_, T_;
+	private static int result;
+	
 	public static void main(String[] args) throws IOException {
-
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		int s = Integer.parseInt(st.nextToken());
-		int p = Integer.parseInt(st.nextToken());
-		char[] DNA = br.readLine().toCharArray();
+		S = Integer.parseInt(st.nextToken());
+		P = Integer.parseInt(st.nextToken());
+		s = new StringTokenizer(br.readLine()).nextToken();
 		st = new StringTokenizer(br.readLine());
-		optionA = Integer.parseInt(st.nextToken());
-		optionC = Integer.parseInt(st.nextToken());
-		optionG = Integer.parseInt(st.nextToken());
-		optionT = Integer.parseInt(st.nextToken());
-
-		int A = 0;
-		int C = 0;
-		int G = 0;
-		int T = 0;
-
-		// start
-		// 첫구간합
-		for (int i = 0; i < p; i++) {
-			switch (DNA[i]) {
-			case 'A':
-				A++;
-				break;
-			case 'C':
-				C++;
-				break;
-			case 'G':
-				G++;
-				break;
-			case 'T':
-				T++;
-				break;
-			}
+		A = Integer.parseInt(st.nextToken());
+		C = Integer.parseInt(st.nextToken());
+		G = Integer.parseInt(st.nextToken());
+		T = Integer.parseInt(st.nextToken());
+		
+		// 구간 합 
+		// 0 ~ (P-1) 까지의 구간 합 
+		for(int i = 0; i < P; i++) {
+			add(s.charAt(i));
 		}
-		int result = 0;
-		if (canPassword(A, C, G, T)) {
-			result++;
+		
+		// 슬라이딩 윈도우 
+		// 첫번째(최초 구간합)케이스 카운트 
+		if(canPassword()) result++;
+		// 0 ~ S-P-1 만큼 이동 
+		for(int i = 0; i < S-P; i++) {
+			// i번째를 빼고, i+P-1 번째를 구간합에 더한다. 
+			remove(s.charAt(i));
+			add(s.charAt(i+P));
+			if(canPassword()) result++;
 		}
-
-		// sliding
-		for (int i = 1; i <= s - p; i++) {
-			switch (DNA[i - 1]) {
-			case 'A':
-				A--;
-				break;
-			case 'C':
-				C--;
-				break;
-			case 'G':
-				G--;
-				break;
-			case 'T':
-				T--;
-				break;
-			}
-			switch (DNA[i + p - 1]) {
-			case 'A':
-				A++;
-				break;
-			case 'C':
-				C++;
-				break;
-			case 'G':
-				G++;
-				break;
-			case 'T':
-				T++;
-				break;
-			}
-			
-			if(canPassword(A, C, G, T)) {
-				result++;
-			}
-		}
+		
 		System.out.println(result);
+		
 	}
-
-	static boolean canPassword(int A, int C, int G, int T) {
-		if (A >= optionA && C >= optionC && G >= optionG && T >= optionT) {
-			return true;
-		} else {
-			return false;
+	private static void remove(char c) {
+		switch (c) {
+		case 'A':
+			A_--;
+			break;
+		case 'C':
+			C_--;
+			break;
+		case 'G':
+			G_--;
+			break;
+		case 'T':
+			T_--;
+			break;
 		}
 	}
-
+	private static void add(char c) {
+		switch (c) {
+		case 'A':
+			A_++;
+			break;
+		case 'C':
+			C_++;
+			break;
+		case 'G':
+			G_++;
+			break;
+		case 'T':
+			T_++;
+			break;
+		}
+	}
+	private static boolean canPassword() {
+		return A_>=A && C_>=C && G_>=G && T_>=T;
+	}
 }
